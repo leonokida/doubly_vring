@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Entrega - Trabalho de Sistemas Distribuídos</title>
+        <meta charset="utf-8">        
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/style.css">
+        <script src="https://kit.fontawesome.com/5065bf138a.js" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
+</html>
+
+<style>
+    li {
+        margin-bottom: 15px;
+    }
+    body {
+        font-size: large;
+    }
+    .title {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .content {
+        margin-left: 10px;
+    }
+</style>
+
+<body>
+   <div class="title">
+       <h1 class="text-center">Relatório - Trabalho de Sistemas Distribuídos</h1>
+       <h3 class="text-center">Leon Augusto Okida Gonçalves</h3>
+   </div>
+   <div class="content mb-3">
+        <h2>Introdução e Algoritmo proposto</h2>
+        <ul>
+            <li>Este trabalho apresenta uma proposta de algoritmo para um detector de falhas em anel baseado em <strong><em>heartbeats</em></strong>, ou seja, uma versão <em>pull</em> do VRing.</li>
+            <li>O algoritmo proposto foi batizado de <strong>Doubly VRing</strong>.</li>
+            <li>A ideia principal do algoritmo é alternar o sentido das rodadas entre <strong>horário</strong> e <strong>anti-horário</strong>.</li>
+            <li>Com isso, os processos conseguem informar ambos os vizinhos do anel de que estão corretos.</li>
+            <li>Ao não receber um heartbeat esperado de um processo <strong>x-1</strong>, um processo <strong>x</strong> conclui que <strong>x-1</strong> está falho.</li>
+            <li>Na próxima rodada, como o sentido é inverso, ele envia um heartbeat para <strong>x-2</strong> e também o informa que <strong>x-1</strong> está falho.</li>
+            <li>Um processo copia informações do vetor <code>State[]</code> do outro processo que enviou heartbeat para ele.</li>
+            <li>Para evitar perda de informação nas trocas de sentido das rodadas, processos só copiam informações de <code>State[]</code> se elas forem mais recentes que as informações que possuem (uso de histórico).</li>
+            <li>O modelo de falhas é <strong><em>crash</em></strong>, sem recuperação.</li>
+        </ul>
+    </div>
+    <hr>
+   <div class="content mb-3">
+       <h2>Pseudocódigo</h2>
+       Cada rodada do algoritmo possui 2 etapas: o envio de um heartbeat e o processamento de um heartbeat recebido ou de timeout.
+       <li>Inicialização por um processo <code>i</code></li>
+       <code>
+        &emsp;i.sucessor_horário &larr; (i + 1) mod N <br>
+        &emsp;i.antecessor_antihorário &larr; (i + 1) mod N <br>
+        &emsp;i.sucessor_antihorário &larr; (i - 1 + N) mod N <br>
+        &emsp;i.antecessor_horário &larr; (i - 1 + N) mod N <br>
+        &emsp;i.contador &larr; 0 <br>
+       </code>
+       <li>Envio de heartbeat por um processo <code>i</code></li>
+       <code>
+        // Sentido horário <br>
+        se i.contador é par { <br>
+            &emsp; j &larr; i.sucessor_horário <br>
+        } <br>
+
+        // Sentido anti-horário <br>
+        se i.contador é ímpar { <br>
+            &emsp; j &larr; i.sucessor_antihorário <br>
+        } <br>
+
+        envia_heartbeat(j)
+       </code>
+
+       <li>Processamento de heartbeat recebido ou timeout por um processo <code>i</code></li>
+       <code>
+        // Sentido horário <br>
+        se i.contador é par { <br>
+            &emsp;se recebeu heartbeat de i.antecessor_horário { <br>
+            &emsp;&emsp;j &larr; i.antecessor_horário<br>
+            &emsp;&emsp;i.State[j] &larr; CORRETO <br>
+            &emsp;&emsp;i.ultima_atualizacao[j] &larr; i.contador <br>
+            &emsp;} <br>
+            &emsp;senão { <br>
+            &emsp;&emsp;i.State[i.antecessor_horário] &larr; SUSPEITO <br>
+            &emsp;&emsp;i.ultima_atualizacao[i.antecessor_horário] &larr; i.contador <br>
+            &emsp;&emsp;se recebeu heartbeat de outro processo { <br>
+            &emsp;&emsp;&emsp;j &larr; outro processo<br>
+            &emsp;&emsp;&emsp;i.State[j] &larr; CORRETO <br>
+            &emsp;&emsp;&emsp;i.ultima_atualizacao[j] &larr; i.contador <br>
+            &emsp;&emsp;&emsp;i.sucessor_antihorário &larr; j <br>
+            &emsp;&emsp;&emsp;i.antecessor_horário &larr; j <br>
+            &emsp;&emsp;} <br>
+            &emsp;} <br>
+            &emsp;se recebeu heartbeat {<br>
+            &emsp;&emsp;para k de 0 até N - 1 {<br>
+            &emsp;&emsp;&emsp;se i.ultima_atualizacao[k] &lt j.ultima_atualizacao[k] {<br>
+            &emsp;&emsp;&emsp;&emsp;i.State[k] &larr; j.State[k]<br>
+            &emsp;&emsp;&emsp;&emsp;i.ultima_atualizacao[k] &larr; j.ultima_atualizacao[k]<br>
+            &emsp;&emsp;&emsp;} <br>
+            &emsp;&emsp;}<br>
+            &emsp;}<br>
+            &emsp;// Timeout<br>
+            &emsp;senão {<br>
+            &emsp;&emsp;i.antecessor_horário &larr; próximo antecessor no sentido horário não falho segundo i.State[]<br>
+            &emsp;&emsp;i.sucessor_antihorário &larr; i.antecessor_horário<br>
+            &emsp;}<br>
+        } <br>
+
+        // Sentido anti-horário <br>
+        se i.contador é par { <br>
+            &emsp;se recebeu heartbeat de i.antecessor_antihorário { <br>
+            &emsp;&emsp;j &larr; i.antecessor_antihorário<br>
+            &emsp;&emsp;i.State[j] &larr; CORRETO <br>
+            &emsp;&emsp;i.ultima_atualizacao[j] &larr; i.contador <br>
+            &emsp;} <br>
+            &emsp;senão { <br>
+            &emsp;&emsp;i.State[i.antecessor_antihorário] &larr; SUSPEITO <br>
+            &emsp;&emsp;i.ultima_atualizacao[i.antecessor_antihorário] &larr; i.contador <br>
+            &emsp;&emsp;se recebeu heartbeat de outro processo { <br>
+            &emsp;&emsp;&emsp;j &larr; outro processo<br>
+            &emsp;&emsp;&emsp;i.State[j] &larr; CORRETO <br>
+            &emsp;&emsp;&emsp;i.ultima_atualizacao[j] &larr; i.contador <br>
+            &emsp;&emsp;&emsp;i.sucessor_horário &larr; j <br>
+            &emsp;&emsp;&emsp;i.antecessor_antihorário &larr; j <br>
+            &emsp;&emsp;} <br>
+            &emsp;} <br>
+            &emsp;se recebeu heartbeat {<br>
+            &emsp;&emsp;para k de 0 até N - 1 {<br>
+            &emsp;&emsp;&emsp;se i.ultima_atualizacao[k] &lt j.ultima_atualizacao[k] {<br>
+            &emsp;&emsp;&emsp;&emsp;i.State[k] &larr; j.State[k]<br>
+            &emsp;&emsp;&emsp;&emsp;i.ultima_atualizacao[k] &larr; j.ultima_atualizacao[k]<br>
+            &emsp;&emsp;&emsp;} <br>
+            &emsp;&emsp;}<br>
+            &emsp;}<br>
+            &emsp;// Timeout<br>
+            &emsp;senão {<br>
+            &emsp;&emsp;i.antecessor_antihorário &larr; próximo antecessor no sentido anti-horário não falho segundo i.State[]<br>
+            &emsp;&emsp;i.sucessor_horário &larr; i.antecessor_antihorário<br>
+            &emsp;}<br>
+        } <br>
+        
+        i.contador = i.contador + 1 <br>
+       </code>
+   </div>
+   <hr>
+   <div class="content mb-3">
+        <h2>Código fonte</h2>
+        <ul>
+            <li>Simulação: <a href="doubly_vring.c.txt">doubly_vring.c</a></li>
+            <li>Makefile: <a href="makefile.txt">makefile</a></li>
+            <li>Código fonte completo: <a href="arquivos_fonte.zip">Arquivo .zip</a></li>
+        </ul>
+   </div>
+   <hr>
+   <div class="content mb-3">
+        <h2>Como compilar e executar</h2>
+        Execute os comandos: <br>
+        <code>
+            $ make <br>
+            $ ./doubly_vring &ltnúmero de processos&gt <br>
+        </code>
+    </div>
+    <hr>
+   <div class="content mb-3">
+        <h2>Resultados</h2>
+        <ul>
+            <li>O trabalho foi testado no meu próprio computador.</li>
+            <li>É possível gerar novos experimentos a partir da seção marcada pelo comentário <code>/* Programando falhas para experimentos */</code> no arquivo <code>doubly_vring.c</code>.</li>
+            <li><a href="log_experimento_sem_falhas.txt">Experimento 0: sem ocorrência de falhas</a>
+            <li><a href="log_experimento_1.txt">Experimento 1: 3 falhas em um sistema distribuído com 8 processos</a></li>
+            <li><a href="log_experimento_2.txt">Experimento 2: 2 falhas em um sistema distribuído com 4 processos</a></li>
+            <li><a href="log_experimento_3.txt">Experimento 3: 8 falhas em um sistema distribuído com 16 processos</a></li>
+            <li><a href="log_experimento_4.txt">Experimento 4: 12 falhas em um sistema distribuído com 32 processos</a></li>
+            <li><a href="log_experimento_5.txt">Experimento 5: 7 falhas em um sistema distribuído com 8 processos</a></li>
+        </ul>
+   </div>
+   <hr>
+   <div class="content mb-3">
+        <h2>Conclusões</h2>
+        <ul>
+            <li>Apesar da latência mais alta do que no VRing baseado em testes e necessitar de mais informações (contador de rodadas e histórico de atualizações), a abordagem proposta consegue detectar falhas e propagar a informação pelo sistema distribuído.</li>
+        </ul>
+   </div>
+</body>

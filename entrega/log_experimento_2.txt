@@ -1,0 +1,77 @@
+===============================================================
+Autor: Leon Augusto Okida Gonçalves
+Log do Trabalho - VRing Baseado em Push - Doubly VRing
+Este programa foi executado para: N=4 processos.
+Tempo Total de Simulação = 155
+===============================================================
+Processo 0: estou enviando heartbeat para o processo 1 no tempo 15.0
+Processo 1: estou enviando heartbeat para o processo 2 no tempo 15.0
+Processo 2: estou enviando heartbeat para o processo 3 no tempo 15.0
+Processo 3: estou enviando heartbeat para o processo 0 no tempo 15.0
+Processo 0: processei heartbeat do processo 3 no tempo 20.0
+Processo 0: State = [ 0, -1, -1, 0 ]
+Processo 1: processei heartbeat do processo 0 no tempo 20.0
+Processo 1: State = [ 0, 0, -1, -1 ]
+Processo 2: processei heartbeat do processo 1 no tempo 20.0
+Processo 2: State = [ -1, 0, 0, -1 ]
+Processo 3: processei heartbeat do processo 2 no tempo 20.0
+Processo 3: State = [ -1, -1, 0, 0 ]
+Processo 0: estou enviando heartbeat para o processo 3 no tempo 30.0
+Processo 1: estou enviando heartbeat para o processo 0 no tempo 30.0
+Processo 2: estou enviando heartbeat para o processo 1 no tempo 30.0
+Processo 3: estou enviando heartbeat para o processo 2 no tempo 30.0
+Socooorro!!! Sou o processo 0  e estou falhando no tempo 31.0
+Socooorro!!! Sou o processo 2  e estou falhando no tempo 31.0
+Processo 1: processei heartbeat do processo 2 no tempo 35.0
+Processo 1: State = [ 0, 0, 0, -1 ]
+Processo 3: processei heartbeat do processo 0 no tempo 35.0
+Processo 3: State = [ 0, -1, 0, 0 ]
+Processo 1: estou enviando heartbeat para o processo 2 no tempo 45.0
+Processo 3: estou enviando heartbeat para o processo 0 no tempo 45.0
+Processo 1: não recebi heartbeat algum no tempo 50.0
+Processo 1: State = [ 1, 0, 0, -1 ]
+Processo 3: não recebi heartbeat algum no tempo 50.0
+Processo 3: State = [ 0, -1, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 60.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 60.0
+Processo 1: processei heartbeat do processo 3 no tempo 65.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 65.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 75.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 75.0
+Processo 1: processei heartbeat do processo 3 no tempo 80.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 80.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 90.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 90.0
+Processo 1: processei heartbeat do processo 3 no tempo 95.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 95.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 105.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 105.0
+Processo 1: processei heartbeat do processo 3 no tempo 110.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 110.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 120.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 120.0
+Processo 1: processei heartbeat do processo 3 no tempo 125.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 125.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 135.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 135.0
+Processo 1: processei heartbeat do processo 3 no tempo 140.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 140.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 150.0
+Processo 3: estou enviando heartbeat para o processo 1 no tempo 150.0
+Processo 1: processei heartbeat do processo 3 no tempo 155.0
+Processo 1: State = [ 1, 0, 1, 0 ]
+Processo 3: processei heartbeat do processo 1 no tempo 155.0
+Processo 3: State = [ 1, 0, 1, 0 ]
+Processo 1: estou enviando heartbeat para o processo 3 no tempo 165.0
