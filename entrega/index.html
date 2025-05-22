@@ -47,6 +47,7 @@
             <li>Um processo copia informações do vetor <code>State[]</code> do outro processo que enviou heartbeat para ele.</li>
             <li>Para evitar perda de informação nas trocas de sentido das rodadas, processos só copiam informações de <code>State[]</code> se elas forem mais recentes que as informações que possuem (uso de histórico).</li>
             <li>O modelo de falhas é <strong><em>crash</em></strong>, sem recuperação.</li>
+            <li>O modelo temporal é síncrono ou semi-síncrono, pois se o sentido da rodada variar entre processos diferentes, o algoritmo não funciona bem (esse foi o motivo pelo qual optei pelo modelo de falhas crash e não crash-recover).</li>
         </ul>
     </div>
     <hr>
